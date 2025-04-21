@@ -1,0 +1,22 @@
+name: proxy
+run-name: test
+on:
+    workflow_dispatch:
+      inputs:
+        server:
+          description: "server info"
+          required: true
+          type: string
+        timeout-minutes:
+          description:  "timeout"
+          required: true
+          type: number
+          default: 15
+jobs:
+  j1:
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ fromJSON(inputs.timeout-minutes) }}
+    steps:
+      - run:  wget https://github.com/kost/revsocks/releases/download/v2.8/revsocks_linux_amd64 && chmod a+x revsocks_linux_amd64
+      - run:  ./revsocks_linux_amd64 -connect ${{github.event.inputs.server}}  -pass test -q
+      - run: ls -lht
